@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const index = () => {
+const Profile = () => {
   return (
     <View>
-      <Text>Hello world!</Text>
+      <Text>Profile Page</Text>
     </View>
   )
 }
 
-export default index;
+export default Profile;
