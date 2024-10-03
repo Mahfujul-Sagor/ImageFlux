@@ -2,7 +2,6 @@ import { View, Text, Image, ScrollView, Dimensions } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CompareSlider } from '@mahfujul-sagor/native-image-comparison-slider';
-// import { CompareSlider } from 'react-native-comparison-slider-next';
 
 import { images } from "../constants";
 import { CustomButton, Loader } from "../components";
@@ -34,16 +33,8 @@ const index = () => {
               before={images.example}
               after={images.enhancedExample}
               containerSize={{ width: width, height: 278 }}
+              resizeMode="cover"
             />
-            {/* <CompareSlider 
-            before={
-              <Image source={images.example} alt="example" resizeMode="cover"/>
-            }
-            after={
-              <Image source={images.enhancedExample} alt="example" resizeMode="cover"/>
-            }
-            containerSize={{width: width, height: 278}}
-            /> */}
           </View>
           <View className="relative mt-6">
             <Text className="text-2xl text-white font-bold text-center">
@@ -60,7 +51,7 @@ const index = () => {
           </View>
 
           <Text className="text-sm font-pregular text-gray-100 mt-6 text-center">
-            <Text className='font-psemibold'>Transform low-res images into stunning high-res masterpieces with cutting-edge AI technology.</Text> Weather it's upscaling, enhancing or restoring, we brign your images to life!
+            <Text className='font-psemibold'>Transform low-res portrait images into stunning high-res masterpieces with cutting-edge AI technology.</Text> Weather it's upscaling, enhancing or restoring, we brign your images to life!
           </Text>
 
           <CustomButton
