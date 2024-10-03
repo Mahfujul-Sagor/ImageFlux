@@ -2,25 +2,26 @@ import { View, Text, Image, ScrollView, Dimensions } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CompareSlider } from '@mahfujul-sagor/native-image-comparison-slider';
+import { Redirect, router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 import { images } from "../constants";
 import { CustomButton, Loader } from "../components";
-import { router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { useGlobalContext } from "../context/GlobalProvider";
 
 const { width } = Dimensions.get('window');
 
 const index = () => {
+  const { loading, isLogged } = useGlobalContext();
+
+  if (!loading && isLogged) return <Redirect href="/home" />;
+
   return (
     <SafeAreaView className="bg-primary h-full">
-      {/* <Loader isLoading={loading} /> */}
+      <Loader isLoading={loading} />
 
-      <ScrollView
-        contentContainerStyle={{
-          height: "100%",
-        }}
-      >
-        <View className="flex-1 px-4">
+      <ScrollView>
+        <View className="flex-1 px-4 pb-8">
           <View className="flex-row justify-center items-center">
             <Image
               source={images.logo}
@@ -33,7 +34,6 @@ const index = () => {
               before={images.example}
               after={images.enhancedExample}
               containerSize={{ width: width, height: 278 }}
-              resizeMode="cover"
             />
           </View>
           <View className="relative mt-6">
