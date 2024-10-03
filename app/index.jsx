@@ -1,12 +1,15 @@
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, Dimensions } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CompareSlider } from 'react-native-comparison-slider-next';
+import { CompareSlider } from '@mahfujul-sagor/native-image-comparison-slider';
+// import { CompareSlider } from 'react-native-comparison-slider-next';
 
 import { images } from "../constants";
 import { CustomButton, Loader } from "../components";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+const { width } = Dimensions.get('window');
 
 const index = () => {
   return (
@@ -26,12 +29,21 @@ const index = () => {
               resizeMode="contain"
             />
           </View>
-          <View className='rounded-lg overflow-hidden'>
+          <View className='rounded-lg w-full overflow-hidden justify-center items-center'>
             <CompareSlider
-              before={<Image source={images.example} resizeMode="contain" />}
-              after={<Image source={images.enhancedExample} resizeMode="contain" />}
-              containerSize={{ width: 350, height: 100 }}
+              before={images.example}
+              after={images.enhancedExample}
+              containerSize={{ width: width, height: 278 }}
             />
+            {/* <CompareSlider 
+            before={
+              <Image source={images.example} alt="example" resizeMode="cover"/>
+            }
+            after={
+              <Image source={images.enhancedExample} alt="example" resizeMode="cover"/>
+            }
+            containerSize={{width: width, height: 278}}
+            /> */}
           </View>
           <View className="relative mt-6">
             <Text className="text-2xl text-white font-bold text-center">
