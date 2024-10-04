@@ -33,7 +33,7 @@ const index = () => {
             <CompareSlider
               before={images.example}
               after={images.enhancedExample}
-              containerSize={{ width: width, height: 278 }}
+              containerSize={{ width: width, height: 300 }}
             />
           </View>
           <View className="relative mt-6">
