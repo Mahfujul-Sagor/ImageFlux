@@ -31,7 +31,7 @@ const Home = () => {
               {checkedState.enhance ? 'Upload Image' : "Let's get started"}
             </Text>
             {checkedState.enhance ? (
-              <TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.6} >
                 <View className='w-full h-[320px] border border-secondary-200/50 items-center justify-center rounded-lg'>
                   <Image source={icons.upload}/>
                 </View>
@@ -53,8 +53,9 @@ const Home = () => {
           </View>
           <View className='w-full items-center mt-10'>
             <TouchableOpacity
-              className={`w-16 h-20 rounded-lg justify-center items-center ${
-                checkedState.enhance ? 'bg-green-500' : 'bg-slate-600'
+              activeOpacity={0.6}
+              className={`w-[70px] h-20 rounded-lg justify-center items-center ${
+                checkedState.enhance ? 'bg-green-500' : 'bg-slate-500'
               }`}
               onPress={() => toggleCheckbox('enhance')}
             >
