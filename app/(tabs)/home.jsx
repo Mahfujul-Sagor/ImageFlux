@@ -1,13 +1,20 @@
-import { View, Text, Image, ScrollView, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from '../../components';
 import { FontAwesome } from '@expo/vector-icons';
 import { CompareSlider } from '@mahfujul-sagor/native-image-comparison-slider';
 import { TouchableOpacity } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import axios from 'axios';
+// import * as FileSystem from 'expo-file-system';
+import { Cloudinary } from '@cloudinary/url-gen';
 
 import { icons, images } from '../../constants';
 import ToastManager, { Toast } from 'toastify-react-native';
+import { CLOUDINARY_CLOUD_NAME } from "@env";
+
 
 const { width } = Dimensions.get('window');
 
@@ -15,14 +22,92 @@ const Home = () => {
   const [checkedState, setCheckedState] = useState({
     enhance: true,
   });
+  // Original image
+  const [imageUri, setImageUri] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  // Uploaded image
+  const [savedImageUri, setSavedImageUri] = useState(null);
+  // TODO: add loader for transforming
+  const [isTransforming, setIsTransforming] = useState(false);
 
   const toggleCheckbox = (key) => {
     setCheckedState((prevState) => ({
       ...prevState,
       [key]: !prevState[key],
     }));
-    Toast.success(`Selected ${key} option`);
   };
+
+  const pickImage = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'image/*',
+      });
+
+      console.log(result.assets[0]);
+
+      if (!result.canceled) {
+        setImageUri(result.assets[0]);
+        Toast.success('Image selected!');
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Toast.error('Error picking image!');
+    }
+  };
+
+  const handleImageUpload = async (imageUri) => {
+    if (!imageUri) {
+      Toast.error('Please select an image first!');
+      return;
+    }
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: imageUri.uri,
+      type: imageUri.mimeType,
+      name: imageUri.name,
+    });
+    formData.append('upload_preset', 'production');
+
+    try {
+      const response = await fetch('http://192.168.0.110:8082/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        Toast.success('Uploaded successfully!');
+        setSavedImageUri(result.data.secure_url);
+      } else {
+        const errorMessage = await response.text();
+        console.error("Error uploading image: ", errorMessage);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Toast.error('Error uploading image!');
+    }finally {
+      setUploading(false);
+    }
+  };
+
+  const generateEnhancedImage = async (public_id) => {
+    const cld = new Cloudinary({
+      cloud: {
+        cloudName: CLOUDINARY_CLOUD_NAME,
+      }
+    });
+
+    try {
+      
+    } catch (error) {
+      console.error('Transformation failed: ', error);
+      Toast.error('Transformation failed!');
+      return null;
+    }
+  }
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -34,25 +119,42 @@ const Home = () => {
               {checkedState.enhance ? 'Upload Image' : "Let's get started"}
             </Text>
             {checkedState.enhance ? (
-              <TouchableOpacity activeOpacity={0.6} >
-                <View className='w-full h-[320px] border border-secondary-200/50 items-center justify-center rounded-lg'>
-                  <Image source={icons.upload}/>
-                </View>
-                {/* <View className='rounded-lg w-full overflow-hidden justify-center items-center'>
+              imageUri ? (
+                <View className='rounded-lg w-full h-[320px] overflow-hidden justify-center items-center'>
                   <CompareSlider
-                    before={images.example}
-                    after={images.enhancedExample}
-                    containerSize={{ width: width, height: 320 }}
+                  before={imageUri}
+                  after={savedImageUri}
+                  containerSize={{width: width, height: 320}}
                   />
-                </View> */}
-              </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableOpacity activeOpacity={0.6} onPress={pickImage}>
+                  <View className='w-full h-[320px] border border-secondary-200/50 items-center justify-center rounded-lg'>
+                    <Image source={icons.upload} alt='upload' />
+                  </View>
+                </TouchableOpacity>
+              )
             ) : (
               <View>
                 <View className='h-[320px] items-center justify-center rounded-lg'>
-                  <Image source={images.empty} resizeMode='cover'/>
+                  <Image source={images.empty} resizeMode='cover' alt='empty'/>
                 </View>
               </View>
             )}
+            <View className="mt-10 items-center">
+            {uploading ? (
+              <ActivityIndicator size="large" color="#00ff00" />
+            ) : (
+              <CustomButton
+              title='Upload Image'
+              handlePress={()=> handleImageUpload(imageUri)}
+              isLoading={uploading}
+              containerColor='bg-blue-400'
+              containerStyles='w-full'
+              textColor='text-white'
+              />
+            )}
+            </View>
           </View>
           <View className='w-full items-center mt-10'>
             <TouchableOpacity
