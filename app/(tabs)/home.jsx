@@ -7,6 +7,7 @@ import { CompareSlider } from '@mahfujul-sagor/native-image-comparison-slider';
 import { TouchableOpacity } from 'react-native';
 
 import { icons, images } from '../../constants';
+import ToastManager, { Toast } from 'toastify-react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -20,10 +21,12 @@ const Home = () => {
       ...prevState,
       [key]: !prevState[key],
     }));
+    Toast.success(`Selected ${key} option`);
   };
 
   return (
     <SafeAreaView className="bg-primary h-full">
+      <ToastManager/>
       <ScrollView>
         <View className='flex-1 px-4 pt-10'>
           <View className='space-y-10'>

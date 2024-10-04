@@ -14,8 +14,10 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@cloudinary/url-gen": "^1.21.0",
     "@expo/vector-icons": "^14.0.2",
     "@mahfujul-sagor/native-image-comparison-slider": "^0.1.6",
+    "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-navigation/native": "^6.0.2",
     "cloudinary-react-native": "^1.0.1",
     "expo": "^51.0.36",
