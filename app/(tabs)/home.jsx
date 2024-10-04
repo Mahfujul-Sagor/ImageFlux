@@ -10,10 +10,12 @@ import * as DocumentPicker from 'expo-document-picker';
 // import axios from 'axios';
 // import * as FileSystem from 'expo-file-system';
 import { Cloudinary } from '@cloudinary/url-gen';
+import { Resize } from '@cloudinary/url-gen/actions/resize';
 
 import { icons, images } from '../../constants';
 import ToastManager, { Toast } from 'toastify-react-native';
 import { CLOUDINARY_CLOUD_NAME } from "@env";
+import { enhance, upscale } from '@cloudinary/url-gen/actions/effect';
 
 
 const { width } = Dimensions.get('window');
@@ -101,7 +103,18 @@ const Home = () => {
     });
 
     try {
+      let transformedImage = cld.image(public_id);
       
+      transformedImage = transformedImage.resize(Resize.fit().width(320).height(180));
+      console.log("image resized successfully");
+
+      transformedImage = transformedImage.effect(upscale());
+      console.log("image upscaled successfully");
+
+      transformedImage = transformedImage.effect(enhance());
+
+      
+
     } catch (error) {
       console.error('Transformation failed: ', error);
       Toast.error('Transformation failed!');
