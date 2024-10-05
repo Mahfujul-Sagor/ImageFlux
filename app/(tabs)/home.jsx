@@ -18,7 +18,7 @@ import {
   upscale,
 } from "@cloudinary/url-gen/actions/effect";
 
-import { CLOUDINARY_CLOUD_NAME } from "@env";
+import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 import { icons, images } from "../../constants";
 import { generateRandomString } from "../../lib/utils";
 
@@ -117,7 +117,7 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const response = await fetch("http://192.168.0.110:8081/api/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         body: formData,
       });
@@ -153,7 +153,7 @@ const Home = () => {
     setDeleting(true);
 
     try {
-      const response = await fetch("http://192.168.0.110:8081/api/delete", {
+      const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
