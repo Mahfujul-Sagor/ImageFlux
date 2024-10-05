@@ -81,7 +81,8 @@ const Home = () => {
       transformedImage = transformedImage.effect(generativeRestore());
       console.log("image generative restored successfully");
 
-      return transformedImage.toURL();
+      const transformedUrl = transformedImage.toURL();
+      return transformedUrl;
     } catch (error) {
       console.error("Transformation failed: ", error);
       Toast.error("Transformation failed!");
@@ -122,9 +123,11 @@ const Home = () => {
       if (response.ok) {
         const result = await response.json();
         Toast.success("Uploaded successfully!");
+
         setSavedImageUri(result.data.secure_url);
         setPublicId(result.data.public_id);
-        generateEnhancedImage(public_id).then((enhancedImage) => {
+
+        generateEnhancedImage(result.data.public_id).then((enhancedImage) => {
           setEnhancedImage(enhancedImage);
         });
       } else {
