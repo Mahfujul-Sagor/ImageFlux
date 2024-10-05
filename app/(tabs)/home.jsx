@@ -134,7 +134,8 @@ const Home = () => {
         });
       } else {
         const errorMessage = await response.text();
-        console.error("Error uploading image: ", errorMessage);
+        console.error("Error uploading image! ", errorMessage);
+        return;
       }
     } catch (error) {
       console.error("Error uploading image:", error);

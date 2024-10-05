@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "imageflux",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/adaptive-icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#161622"
-      }    
+      },
+      "permissions": [ "INTERNET" ]    
     },
     "web": {
       "bundler": "metro",
