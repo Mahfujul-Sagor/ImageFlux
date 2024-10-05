@@ -7,7 +7,9 @@ import { CompareSlider } from "@mahfujul-sagor/native-image-comparison-slider";
 import { TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import ToastManager, { Toast } from "toastify-react-native";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { ToastAndroid } from 'react-native';
 import { Cloudinary } from "@cloudinary/url-gen";
 import { Resize } from "@cloudinary/url-gen/actions/resize";
 import {
@@ -179,17 +181,24 @@ const Home = () => {
   };
 
   const handleImageDownload = async (url) => {
-    const randomString = generateRandomString(7);
-    const fileUri = `${FileSystem.documentDirectory}ImageFlux-Enhanced-${randomString}.jpg`;
-
     try {
+      const randomString = generateRandomString(7);
+      const fileUri = `${FileSystem.documentDirectory}ImageFlux-AI-${randomString}.jpg`;
+  
+      // Download the file to app storage
       const { uri } = await FileSystem.downloadAsync(url, fileUri);
-      console.log("Image downloaded to:", uri);
-      Toast.success("Image downloaded!");
+      console.log('Image downloaded to:', uri);
+      
+      // Share it so the user can save it in their preferred location
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+        ToastAndroid.show('Image saved!', ToastAndroid.SHORT);
+      } else {
+        console.log("Sharing isn't available on this device");
+      }
     } catch (error) {
-      console.error("Error downloading image:", error);
-      Toast.error("Error downloading image!");
-      return;
+      console.error('Error downloading image:', error);
+      ToastAndroid.show('Error downloading image!', ToastAndroid.SHORT);
     }
   };
 
