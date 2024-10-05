@@ -72,7 +72,7 @@ const Home = () => {
     formData.append('upload_preset', 'production');
 
     try {
-      const response = await fetch('http://192.168.0.110:8082/api/upload', {
+      const response = await fetch('http://192.168.0.110:8081/api/upload', {
         method: 'POST',
         body: formData,
       });
