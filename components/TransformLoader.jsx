@@ -9,7 +9,7 @@ const TransformLoader = ({ isLoading, text, background }) => {
 
   return (
     <View
-      className={`absolute flex justify-center items-center w-full transition-colors duration-150 border border-secondary-200/50 ${background ? background : 'bg-primary'} rounded-lg z-10`}
+      className={`absolute flex justify-center items-center w-full transition-colors duration-150 ${background ? background : 'bg-primary'} rounded-lg z-10`}
       style={{
         height: 320,
         width: screenWidth,
