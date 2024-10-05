@@ -1,21 +1,12 @@
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  Dimensions,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Image, ScrollView, Dimensions } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomButton, TransformLoader } from "../../components";
-import { FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { CompareSlider } from "@mahfujul-sagor/native-image-comparison-slider";
 import { TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import ToastManager, { Toast } from "toastify-react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { Resize } from "@cloudinary/url-gen/actions/resize";
@@ -27,6 +18,7 @@ import {
 
 import { CLOUDINARY_CLOUD_NAME } from "@env";
 import { icons, images } from "../../constants";
+import { generateRandomString } from "../../lib/utils";
 
 const { width } = Dimensions.get("window");
 
@@ -34,18 +26,11 @@ const Home = () => {
   const [checkedState, setCheckedState] = useState({
     enhance: true,
   });
-  // Original image
   const [imageUri, setImageUri] = useState(null);
-  // loader for uploading
   const [uploading, setUploading] = useState(false);
-  // loader for deleting
   const [deleting, setDeleting] = useState(false);
-  // Uploaded image
   const [savedImageUri, setSavedImageUri] = useState(null);
   const [public_id, setPublicId] = useState(null);
-  // loader for transforming
-  const [isTransforming, setIsTransforming] = useState(false);
-  // enhanced image
   const [enhancedImage, setEnhancedImage] = useState(null);
 
   const toggleCheckbox = (key) => {
@@ -106,10 +91,8 @@ const Home = () => {
 
   useEffect(() => {
     if (savedImageUri && public_id) {
-      setIsTransforming(true);
       generateEnhancedImage(public_id).then((enhancedImage) => {
         setEnhancedImage(enhancedImage);
-        setIsTransforming(false);
       });
     }
   }, [generateEnhancedImage, public_id, savedImageUri]);
@@ -192,6 +175,21 @@ const Home = () => {
     }
   };
 
+  const handleImageDownload = async (url) => {
+    const randomString = generateRandomString(7);
+    const fileUri = `${FileSystem.documentDirectory}ImageFlux-Enhanced-${randomString}.jpg`;
+
+    try {
+      const { uri } = await FileSystem.downloadAsync(url, fileUri);
+      console.log("Image downloaded to:", uri);
+      Toast.success("Image downloaded!");
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      Toast.error("Error downloading image!");
+      return;
+    }
+  };
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ToastManager />
@@ -229,22 +227,30 @@ const Home = () => {
                       />
                     </View>
                   )}
-                  <View className="mt-10 flex-row items-center justify-center space-x-2">
+                  <View className="mt-10 flex-row items-center justify-evenly ">
                     <CustomButton
-                      title="Delete Image"
+                      title={
+                        <MaterialIcons
+                          name="delete-outline"
+                          color="white"
+                          size={25}
+                        />
+                      }
                       handlePress={() => handleImageDelete(public_id)}
                       isLoading={deleting}
                       containerColor="bg-red-500"
                       textColor="text-white"
-                      containerStyles="px-4"
+                      containerStyles="w-[62px]"
                     />
                     <CustomButton
-                      title="Download Image"
-                      handlePress={() => {}}
+                      title={
+                        <Feather name="download" color="white" size={25} />
+                      }
+                      handlePress={() => handleImageDownload(enhancedImage)}
                       isLoading={uploading}
                       containerColor="bg-blue-500"
                       textColor="text-white"
-                      containerStyles="px-4"
+                      containerStyles="w-[62px]"
                     />
                   </View>
                 </>
