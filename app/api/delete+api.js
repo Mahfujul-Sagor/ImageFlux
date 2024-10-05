@@ -1,4 +1,5 @@
-import cloudinary from "cloudinary";
+import {v2 as cloudinary} from "cloudinary";
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "@env";
 
 cloudinary.config({
   cloud_name: CLOUDINARY_CLOUD_NAME,
@@ -7,39 +8,36 @@ cloudinary.config({
 });
 
 export const DELETE = async (req, res) => {
-  const { public_id } = req.body;
+  const { public_id } = await req.json();
 
   if (!public_id) {
-    return res.json({
+    return new Response(JSON.stringify({
       ok: false,
-      status: 404,
       message: "No public_id provided",
-    });
+    }), { status: 404 });
   }
 
   try {
-    const response = await cloudinary.v2.uploader.destroy(public_id);
+    const response = await cloudinary.uploader.destroy(public_id);
 
-    if (!response.result !== 'ok') {
-      return res.json({
+    if (response.result !== 'ok') {
+      console.error(`Failed to delete image with public_id: ${public_id}`);
+      return new Response(JSON.stringify({
         ok: false,
-        status: 500,
-        message: "Image could not be deleted",
-      });
+        message: "Internal server error deleting file",
+      }), { status: 500 });
     }
 
-    return res.json({
+    return new Response(JSON.stringify({
       ok: true,
-      status: 202,
-      message: "Image deleted successfully",
+      message: "File deleted successfully",
       data: response,
-    });
+    }), { status: 202 });
   } catch (error) {
     console.log("Error deleting image", error);
-    return res.json({
+    return new Response(JSON.stringify({
       ok: false,
-      status: 500,
-      message: "Internal server error deleting image",
-    });
+      message: "Internal server error deleting file",
+    }), { status: 500 });
   }
 };

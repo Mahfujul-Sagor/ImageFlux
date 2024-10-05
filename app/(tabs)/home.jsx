@@ -8,25 +8,25 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CustomButton } from "../../components";
+import { CustomButton, TransformLoader } from "../../components";
 import { FontAwesome } from "@expo/vector-icons";
 import { CompareSlider } from "@mahfujul-sagor/native-image-comparison-slider";
 import { TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import axios from 'axios';
-// import * as FileSystem from 'expo-file-system';
+import ToastManager, { Toast } from "toastify-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import * as FileSystem from "expo-file-system";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { Resize } from "@cloudinary/url-gen/actions/resize";
-
-import { icons, images } from "../../constants";
-import ToastManager, { Toast } from "toastify-react-native";
-import { CLOUDINARY_CLOUD_NAME } from "@env";
 import {
   enhance,
   generativeRestore,
   upscale,
 } from "@cloudinary/url-gen/actions/effect";
+
+import { CLOUDINARY_CLOUD_NAME } from "@env";
+import { icons, images } from "../../constants";
 
 const { width } = Dimensions.get("window");
 
@@ -36,13 +36,17 @@ const Home = () => {
   });
   // Original image
   const [imageUri, setImageUri] = useState(null);
+  // loader for uploading
   const [uploading, setUploading] = useState(false);
+  // loader for deleting
+  const [deleting, setDeleting] = useState(false);
   // Uploaded image
   const [savedImageUri, setSavedImageUri] = useState(null);
-  // TODO: add loader for transforming
-  const [isTransforming, setIsTransforming] = useState(false);
-  const [enhancedImage, setEnhancedImage] = useState(null);
   const [public_id, setPublicId] = useState(null);
+  // loader for transforming
+  const [isTransforming, setIsTransforming] = useState(false);
+  // enhanced image
+  const [enhancedImage, setEnhancedImage] = useState(null);
 
   const toggleCheckbox = (key) => {
     setCheckedState((prevState) => ({
@@ -57,11 +61,10 @@ const Home = () => {
         type: "image/*",
       });
 
-      console.log(result.assets[0]);
-
       if (!result.canceled) {
         setImageUri(result.assets[0]);
         Toast.success("Image selected!");
+        await handleImageUpload(result.assets[0]);
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -102,12 +105,14 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (savedImageUri) {
+    if (savedImageUri && public_id) {
+      setIsTransforming(true);
       generateEnhancedImage(public_id).then((enhancedImage) => {
         setEnhancedImage(enhancedImage);
+        setIsTransforming(false);
       });
     }
-  }, [generateEnhancedImage]);
+  }, [generateEnhancedImage, public_id, savedImageUri]);
 
   const handleImageUpload = async (imageUri) => {
     if (!imageUri) {
@@ -126,8 +131,8 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const response = await fetch('http://192.168.0.110:8081/api/upload', {
-        method: 'POST',
+      const response = await fetch("http://192.168.0.110:8081/api/upload", {
+        method: "POST",
         body: formData,
       });
 
@@ -151,6 +156,42 @@ const Home = () => {
     }
   };
 
+  const handleImageDelete = async (public_id) => {
+    if (!public_id) {
+      Toast.error("Please select an image first!");
+      return;
+    }
+
+    setDeleting(true);
+
+    try {
+      const response = await fetch("http://192.168.0.110:8081/api/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ public_id }),
+      });
+
+      if (response.ok) {
+        Toast.success("Deleted successfully!");
+        setSavedImageUri(null);
+        setPublicId(null);
+        setEnhancedImage(null);
+        setImageUri(null);
+      } else {
+        const errorMessage = await response.text();
+        console.error("Error deleting image!", errorMessage);
+        Toast.error("Error deleting image");
+      }
+    } catch (error) {
+      console.log("Error deleting image", error);
+      Toast.error("Error deleting image!");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ToastManager />
@@ -161,14 +202,52 @@ const Home = () => {
               {checkedState.enhance ? "Upload Image" : "Let's get started"}
             </Text>
             {checkedState.enhance ? (
-              imageUri ? (
+              uploading ? (
                 <View className="rounded-lg w-full h-[320px] overflow-hidden justify-center items-center">
-                  <CompareSlider
-                    before={imageUri}
-                    after={enhancedImage}
-                    containerSize={{ width: width, height: 320 }}
+                  <TransformLoader
+                    isLoading={uploading}
+                    text="Uploading..."
+                    background="bg-blue-500"
                   />
                 </View>
+              ) : imageUri ? (
+                <>
+                  {deleting ? (
+                    <View className="rounded-lg w-full h-[320px] overflow-hidden justify-center items-center">
+                      <TransformLoader
+                        isLoading={deleting}
+                        text="Deleting..."
+                        background="bg-red-500"
+                      />
+                    </View>
+                  ) : (
+                    <View className="rounded-lg w-full h-[320px] overflow-hidden justify-center items-center">
+                      <CompareSlider
+                        before={imageUri}
+                        after={enhancedImage}
+                        containerSize={{ width: width, height: 320 }}
+                      />
+                    </View>
+                  )}
+                  <View className="mt-10 flex-row items-center justify-center space-x-2">
+                    <CustomButton
+                      title="Delete Image"
+                      handlePress={() => handleImageDelete(public_id)}
+                      isLoading={deleting}
+                      containerColor="bg-red-500"
+                      textColor="text-white"
+                      containerStyles="px-4"
+                    />
+                    <CustomButton
+                      title="Download Image"
+                      handlePress={() => {}}
+                      isLoading={uploading}
+                      containerColor="bg-blue-500"
+                      textColor="text-white"
+                      containerStyles="px-4"
+                    />
+                  </View>
+                </>
               ) : (
                 <TouchableOpacity activeOpacity={0.6} onPress={pickImage}>
                   <View className="w-full h-[320px] border border-secondary-200/50 items-center justify-center rounded-lg">
@@ -183,20 +262,6 @@ const Home = () => {
                 </View>
               </View>
             )}
-            <View className="mt-10 items-center">
-              {uploading ? (
-                <ActivityIndicator size="large" color="#00ff00" />
-              ) : (
-                <CustomButton
-                  title="Upload Image"
-                  handlePress={() => handleImageUpload(imageUri)}
-                  isLoading={uploading}
-                  containerColor="bg-blue-400"
-                  containerStyles="w-full"
-                  textColor="text-white"
-                />
-              )}
-            </View>
           </View>
           <View className="w-full items-center mt-10">
             <TouchableOpacity
