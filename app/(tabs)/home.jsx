@@ -17,15 +17,16 @@ import {
   generativeRestore,
   upscale,
 } from "@cloudinary/url-gen/actions/effect";
-
-import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 import { icons, images } from "../../constants";
 import { generateRandomString } from "../../lib/utils";
-import { account } from "../../lib/config";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 
 const { width } = Dimensions.get("window");
 
 const Home = () => {
+  const { user } = useGlobalContext();
+
   const [checkedState, setCheckedState] = useState({
     enhance: true,
   });
@@ -118,13 +119,12 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const session = await account.getSession('current');
-      const token = session.$id;
+      const sessionId = user.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         headers: {
-          "Authorization": token,
+          "Authorization": sessionId,
         },
         body: formData,
       });
@@ -160,13 +160,12 @@ const Home = () => {
     setDeleting(true);
 
     try {
-      const session = await account.getSession('current');
-      const token = session.$id;
+      const sessionId = user.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
         headers: {
-          "Authorization": token,
+          "Authorization": sessionId,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ public_id }),
