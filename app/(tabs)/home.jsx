@@ -21,6 +21,7 @@ import {
 import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 import { icons, images } from "../../constants";
 import { generateRandomString } from "../../lib/utils";
+import { account } from "../../lib/config";
 
 const { width } = Dimensions.get("window");
 
