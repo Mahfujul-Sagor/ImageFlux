@@ -117,8 +117,14 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
+      const session = await account.getSession('current');
+      const token = session.$id;
+
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -153,9 +159,13 @@ const Home = () => {
     setDeleting(true);
 
     try {
+      const session = await account.getSession('current');
+      const token = session.$id;
+
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ public_id }),
