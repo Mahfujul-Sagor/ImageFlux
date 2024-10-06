@@ -134,7 +134,7 @@ const Home = () => {
         });
       } else {
         const errorMessage = await response.text();
-        console.error("Error uploading image: ", errorMessage);
+        console.error(`HTTP error! Status: ${response.status}`, errorMessage);
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -169,11 +169,11 @@ const Home = () => {
         setImageUri(null);
       } else {
         const errorMessage = await response.text();
-        console.error("Error deleting image!", errorMessage);
-        Toast.error("Error deleting image");
+        console.error(`HTTP error! Status: ${response.status}`, errorMessage);
+        Toast.error("Error deleting image!");
       }
     } catch (error) {
-      console.log("Error deleting image", error);
+      console.log("Error deleting image: ", error);
       Toast.error("Error deleting image!");
     } finally {
       setDeleting(false);
