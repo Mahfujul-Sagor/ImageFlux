@@ -124,7 +124,7 @@ const Home = () => {
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         headers: {
-          "Authorization": sessionId,
+          "Authorization": `Bearer ${sessionId}`,
         },
         body: formData,
       });
@@ -165,7 +165,7 @@ const Home = () => {
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
         headers: {
-          "Authorization": sessionId,
+          "Authorization": `Bearer ${sessionId}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ public_id }),
