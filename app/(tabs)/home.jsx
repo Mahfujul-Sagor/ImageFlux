@@ -119,7 +119,7 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const sessionId = user.$id;
+      const sessionId = user?.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
@@ -160,7 +160,7 @@ const Home = () => {
     setDeleting(true);
 
     try {
-      const sessionId = user.$id;
+      const sessionId = user?.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
