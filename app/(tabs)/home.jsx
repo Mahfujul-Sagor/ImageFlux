@@ -25,7 +25,7 @@ import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
-  const { user } = useGlobalContext();
+  const { session } = useGlobalContext();
 
   const [checkedState, setCheckedState] = useState({
     enhance: true,
@@ -119,7 +119,7 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const sessionId = user?.$id;
+      const sessionId = session?.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
@@ -160,7 +160,7 @@ const Home = () => {
     setDeleting(true);
 
     try {
-      const sessionId = user?.$id;
+      const sessionId = session?.$id;
 
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
