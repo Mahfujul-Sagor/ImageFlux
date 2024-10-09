@@ -25,7 +25,7 @@ import { CLOUDINARY_CLOUD_NAME, API_BASE_URL } from "@env";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
-  const { session } = useGlobalContext();
+  const { session } = useGlobalContext();  
 
   const [checkedState, setCheckedState] = useState({
     enhance: true,
@@ -110,9 +110,9 @@ const Home = () => {
 
     setUploading(true);
 
-    const sessionId = session?.$id;
+    const userId = session?.userId;
 
-    if (!sessionId) {
+    if (!userId) {
       Toast.error("Session ID is missing or invalid!");
       setUploading(false);
       return;
@@ -130,7 +130,7 @@ const Home = () => {
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${sessionId}`,
+          "Authorization": `Bearer ${userId}`,
         },
         body: formData,
       });
@@ -166,12 +166,12 @@ const Home = () => {
     setDeleting(true);
 
     try {
-      const sessionId = session?.$id;
+      const userId = session?.userId;
 
       const response = await fetch(`${API_BASE_URL}/api/delete`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${sessionId}`,
+          "Authorization": `Bearer ${userId}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ public_id }),
