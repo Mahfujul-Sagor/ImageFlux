@@ -110,6 +110,14 @@ const Home = () => {
 
     setUploading(true);
 
+    const sessionId = session?.$id;
+
+    if (!sessionId) {
+      Toast.error("Session ID is missing or invalid!");
+      setUploading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", {
       uri: imageUri.uri,
@@ -119,8 +127,6 @@ const Home = () => {
     formData.append("upload_preset", "production");
 
     try {
-      const sessionId = session?.$id;
-
       const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: "POST",
         headers: {
