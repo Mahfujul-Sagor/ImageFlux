@@ -20,7 +20,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#161622"
       },
-      "permissions": ["INTERNET"]      
+      "permissions": [
+        "INTERNET"
+      ],
+      "package": "com.mahfujulsagor.ImageFlux"
     },
     "web": {
       "bundler": "metro",
@@ -30,6 +33,11 @@
     "plugins": [
       "expo-router"
     ],
-    "experiments": {}
+    "experiments": {},
+    "extra": {
+      "eas": {
+        "projectId": "a53de5e1-7ec3-4448-9f3d-07d1550d6e54"
+      }
+    }
   }
 }
