@@ -18,6 +18,17 @@
       "autoIncrement": true,
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "CLOUDINARY_CLOUD_NAME": "@CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY": "@CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET": "@CLOUDINARY_API_SECRET",
+        "API_BASE_URL": "@API_BASE_URL",
+        "APPWRITE_ENDPOINT": "@APPWRITE_ENDPOINT",
+        "APPWRITE_PLATFORM": "@APPWRITE_PLATFORM",
+        "APPWRITE_PROJECT_ID": "@APPWRITE_PROJECT_ID",
+        "APPWRITE_DATABASE_ID": "@APPWRITE_DATABASE_ID",
+        "APPWRITE_USER_COLLECTION_ID": "@APPWRITE_USER_COLLECTION_ID"
       }
     }
   },
