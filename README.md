@@ -1,50 +1,43 @@
-# Welcome to your Expo app 👋
+# ImageFlux
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**ImageFlux** is an AI-powered image enhancement app that transforms low-resolution images into high-resolution masterpieces. The app provides users with the ability to enhance, crop, and remove backgrounds, among other features, using Cloudinary’s regenerative AI. User management and authentication are handled by Appwrite.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **AI-Powered Image Enhancement:** Transform low-res images into high-quality visuals using Cloudinary’s regenerative AI.
+- **Image Upload & Storage:** Upload images directly to Cloudinary for processing and storage.
+- **User Management:** Secure user registration, login, and session management using Appwrite.
+- **Image Editing Tools:** Features like cropping, background removal, and more.
+- **Cloud-Based:** Fast and scalable, thanks to the integration with Cloudinary for image processing.
+- **Mobile-First Design:** Built using React Native and Expo for cross-platform compatibility.
+
+## Tech Stack
+
+- **Frontend:**
+  - [Expo](https://expo.dev/): React Native framework for building mobile apps.
+  - [React Native](https://reactnative.dev/): A JavaScript framework for building native mobile apps.
+  
+- **Backend:**
+  - [Cloudinary](https://cloudinary.com/): Image storage and AI-based image transformation services.
+  - [Appwrite](https://appwrite.io/): Backend server for user management and authentication.
+  - **Express Server** (optional): For handling file uploads and deletions if necessary.
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Mahfujul-Sagor/ImageFlux.git
+   cd ImageFlux
+
+2. Install the dependencies:
 
    ```bash
    npm install
-   ```
 
-2. Start the app
+3. Set up Appwrite:
 
    ```bash
-    npx expo start
-   ```
+   npm install appwrite
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   
